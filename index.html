@@ -275,7 +275,7 @@ Contoh:
 https://script.google.com/macros/s/XXXXXXXXXXXX/exec
 ============================================================
 */
-const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjuz2mCfzLvLmHyBzh7saNZu_S57Jz5djust8PV-_k3hTj57bwhITcri4a_C8s2IId/exec";
+const APPSCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT";
 
 const levels = [
   {
@@ -412,12 +412,36 @@ const levels = [
 
 ];
 
+const extraWrongOptions = {
+  "Lonjakan Arus":["Menghapus seluruh data sensor.","Mengganti semua sensor tanpa memeriksa penyebab.","Menambah beban agar pola arus semakin tinggi."],
+  "Suhu Terminal":["Mengabaikan tren suhu selama masih ada tegangan.","Mengubah warna kabel sebagai solusi utama.","Mematikan sensor suhu agar alarm tidak muncul."],
+  "Memilih Indera AI":["Sensor cahaya saja.","Timer mekanik saja.","Sakelar manual tanpa data sensor."],
+  "Training Model":["Menghapus data latihan setelah dikumpulkan.","Langsung mengeksekusi relay tanpa model.","Mengganti seluruh sensor dengan timer."],
+  "Data Berlabel":["Unsupervised Learning.","Timer tetap.","Pengoperasian manual tanpa model."],
+  "Mencari Anomali":["Supervised Learning dengan label yang sudah ditentukan.","Memakai timer untuk menemukan pola data.","Mematikan sensor agar data terlihat normal."],
+  "Urutan Keputusan AI":["Eksekusi → Evaluasi → Pembacaan → Keputusan.","Keputusan → Eksekusi → Sensor → Evaluasi.","Timer → Eksekusi → Pembacaan → Sensor."],
+  "Trafo Distrik":["Menunggu sampai trafo rusak total.","Menghapus riwayat temperatur trafo.","Menonaktifkan pemantauan kondisi trafo."],
+  "Manajemen Beban Gedung":["Menyalakan seluruh beban pada jam puncak.","Mengabaikan data PLTS dan pola beban.","Menghapus data konsumsi energi gedung."],
+  "Teknisi Masa Depan":["Hanya mengikuti aturan timer yang tidak berubah.","Bekerja tanpa data sensor.","Mengabaikan perubahan pola beban."],
+  "Sensor Frekuensi":["Sensor suhu saja.","Timer mekanik saja.","Sakelar manual saja."],
+  "Deteksi Pola":["Mengabaikan seluruh perubahan data.","Menghapus data yang berbeda dari pola normal.","Selalu menjalankan jadwal yang sama."],
+  "Alarm Peringatan":["Mengabaikan hasil model.","Menghapus data sensor.","Langsung mematikan semua sistem tanpa evaluasi."],
+  "Beban Adaptif":["Selalu menggunakan timer lama.","Tidak menggunakan data sensor.","Menambah beban ketika beban sedang tinggi."],
+  "Uji Model":["Training ulang tanpa data pengujian.","Langsung memasang model tanpa pengujian.","Menghapus model setelah selesai dilatih."],
+  "Pola Beban Harian":["Menghapus grafik beban harian.","Mengabaikan waktu beban puncak.","Menyalakan semua beban pada waktu yang sama."],
+  "Perawatan Prediktif":["Menunggu kerusakan total terlebih dahulu.","Menghapus data kondisi trafo.","Menghentikan semua pemantauan sensor."],
+  "Proteksi Cerdas":["Menghapus hasil deteksi bahaya.","Menonaktifkan seluruh sensor.","Membiarkan kondisi bahaya tanpa tindakan."],
+  "Data Sensor Real-Time":["Agar model tidak perlu digunakan.","Supaya semua keputusan tetap manual.","Untuk menghapus kebutuhan analisis."],
+  "Smart Grid":["Menghilangkan semua sensor dari jaringan.","Menggunakan aturan tetap tanpa memperhatikan data.","Mengabaikan perubahan beban dan kondisi jaringan."]
+};
+
 let state = {
   name:"",
   level:0,
   score:0,
   correct:0,
-  answers:[]
+  answers:[],
+  currentOptions:[]
 };
 
 const $ = id => document.getElementById(id);
@@ -454,9 +478,23 @@ function renderLevel(){
   $("feedback").innerHTML = "";
   $("nextBtn").classList.add("hidden");
 
-  const optionHTML = item.options.map(option => `
-    <button type="button" class="choice" data-answer="${escapeHTML(option[0])}">
-      <strong>${escapeHTML(option[0])}.</strong> ${escapeHTML(option[1])}
+  // Buat 5 pilihan dan acak posisinya. Jawaban benar hanya boleh berada di B-E.
+  const labels = ["A", "B", "C", "D", "E"];
+  const correctText = item.options.find(option => option[0] === item.answer)[1];
+  const baseWrong = item.options.filter(option => option[0] !== item.answer).map(option => option[1]);
+  const extras = extraWrongOptions[item.title] || [];
+  const wrongTexts = shuffle([...baseWrong, ...extras]).slice(0, 4);
+  const correctLabel = shuffle(labels)[0];
+  const remainingLabels = shuffle(labels.filter(label => label !== correctLabel));
+  const randomizedOptions = [
+    {label: correctLabel, text: correctText, correct: true},
+    ...wrongTexts.map((text, index) => ({label: remainingLabels[index], text, correct: false}))
+  ];
+  state.currentOptions = randomizedOptions;
+
+  const optionHTML = randomizedOptions.map(option => `
+    <button type="button" class="choice" data-answer="${escapeHTML(option.label)}">
+      <strong>${escapeHTML(option.label)}.</strong> ${escapeHTML(option.text)}
     </button>
   `).join("");
 
@@ -482,18 +520,20 @@ function renderLevel(){
 
 function processAnswer(selected){
   const item = state.questionPool[state.level];
-  const isCorrect = selected === item.answer;
+  const selectedOption = (state.currentOptions || []).find(option => option.label === selected);
+  const isCorrect = !!selectedOption && selectedOption.correct;
+  const correctOption = (state.currentOptions || []).find(option => option.correct);
 
   document.querySelectorAll(".choice").forEach(button=>{
     button.disabled = true;
   });
 
   if(isCorrect){
-    state.score += 10;
+    state.score += 5;
     state.correct += 1;
     $("feedback").innerHTML = `
       <div class="feedback good">
-        <strong>✅ Keputusan tepat! +10 poin</strong>
+        <strong>✅ Keputusan tepat! +5 poin</strong>
         <p style="margin:7px 0 0">${escapeHTML(item.explanation)}</p>
       </div>
     `;
@@ -502,7 +542,7 @@ function processAnswer(selected){
       <div class="feedback bad">
         <strong>❌ Keputusan belum tepat. +0 poin</strong>
         <p style="margin:7px 0 0">
-          Jawaban yang lebih tepat adalah <strong>${escapeHTML(item.answer)}</strong>.
+          Jawaban yang lebih tepat adalah <strong>${escapeHTML(correctOption.label)}</strong>.
           ${escapeHTML(item.explanation)}
         </p>
       </div>
@@ -565,7 +605,7 @@ function renderResult(){
 async function saveResult(){
   const saveBox = $("saveStatus");
 
-  if(!APPSCRIPT_URL || APPSCRIPT_URL.includes("GANTI_DENGAN")){
+  if(!APPSCRIPT_URL || APPSCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbyjuz2mCfzLvLmHyBzh7saNZu_S57Jz5djust8PV-_k3hTj57bwhITcri4a_C8s2IId/exec")){
     saveBox.innerHTML =
       "⚠️ <strong>URL Apps Script belum diatur.</strong><br>" +
       "Game tetap selesai, tetapi hasil belum dikirim ke Google Sheets. " +
