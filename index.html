@@ -183,7 +183,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)
         <p>Simulasi Teknisi Cerdas • Kelas X TITL</p>
       </div>
     </div>
-    <span class="tag">10 LEVEL • 100 POIN</span>
+    <span class="tag">20 LEVEL • 100 POIN</span>
   </header>
 
   <section id="startScreen" class="card hero">
@@ -199,8 +199,8 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)
     <div class="scenario" style="text-align:left;margin-top:22px">
       <strong>🎯 Misi Kamu</strong>
       <p style="margin-bottom:0">
-        Selesaikan 10 kondisi kelistrikan. Setiap keputusan tepat bernilai
-        <strong>10 poin</strong>. Nilai maksimum adalah <strong>100</strong>.
+        Selesaikan 20 kondisi kelistrikan secara acak. Setiap keputusan tepat bernilai
+        <strong>5 poin</strong>. Nilai maksimum adalah <strong>100</strong>.
       </p>
     </div>
 
@@ -217,7 +217,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)
     <div class="stats" style="margin-top:0">
       <div class="stat"><span>TEKNISI</span><strong id="displayName">-</strong></div>
       <div class="stat"><span>NILAI</span><strong id="score">0/100</strong></div>
-      <div class="stat"><span>LEVEL</span><strong id="levelText">1/10</strong></div>
+      <div class="stat"><span>LEVEL</span><strong id="levelText">1/20</strong></div>
     </div>
 
     <div class="progress-wrap">
@@ -247,7 +247,7 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)
 
     <div class="stats">
       <div class="stat"><span>SKOR</span><strong id="finalScore">0/100</strong></div>
-      <div class="stat"><span>JAWABAN TEPAT</span><strong id="correctCount">0/10</strong></div>
+      <div class="stat"><span>JAWABAN TEPAT</span><strong id="correctCount">0/20</strong></div>
       <div class="stat"><span>PREDIKAT</span><strong id="grade">-</strong></div>
     </div>
 
@@ -398,6 +398,18 @@ const levels = [
     answer:"A",
     explanation:"Sistem berbasis AI bersifat data-driven, adaptif, dan dapat membantu prediksi serta optimasi."
   }
+
+, {title:"Sensor Frekuensi",data:"Frekuensi listrik harus dipantau agar sistem mengetahui perubahan kondisi jaringan.",question:"Input yang paling tepat untuk memantau parameter ini adalah...",options:[["A","Sensor frekuensi."],["B","Timer saja."],["C","Sakelar manual saja."]],answer:"A",explanation:"Sensor memberikan data parameter listrik yang dapat dianalisis sistem cerdas."}
+, {title:"Deteksi Pola",data:"Data sensor hari ini memiliki pola yang berbeda dari kondisi normal yang pernah dipelajari.",question:"Kemampuan AI yang digunakan adalah...",options:[["A","Pengenalan pola."],["B","Pemutusan manual."],["C","Pengaturan jadwal."]],answer:"A",explanation:"AI dapat mengenali pola dan membantu menemukan kondisi yang menyimpang."}
+, {title:"Alarm Peringatan",data:"Model AI menilai risiko gangguan meningkat tetapi belum membutuhkan pemutusan total.",question:"Tindakan yang paling sesuai adalah...",options:[["A","Mengaktifkan alarm peringatan."],["B","Menghapus data sensor."],["C","Mengabaikan hasil model."]],answer:"A",explanation:"Alarm merupakan salah satu bentuk aksi keputusan sistem AI listrik."}
+, {title:"Beban Adaptif",data:"Beban gedung meningkat secara bertahap sehingga aturan timer lama tidak lagi optimal.",question:"Keunggulan AI pada kondisi ini adalah...",options:[["A","Beradaptasi berdasarkan data."],["B","Selalu mengikuti timer lama."],["C","Tidak memerlukan sensor."]],answer:"A",explanation:"Sistem berbasis AI dapat adaptif mengikuti perubahan pola beban."}
+, {title:"Uji Model",data:"Model AI sudah dilatih dan sekarang harus diperiksa ketepatan prediksinya dengan data pengujian.",question:"Tahap ini disebut...",options:[["A","Testing."],["B","Training."],["C","Eksekusi relay."]],answer:"A",explanation:"Testing digunakan untuk menguji ketepatan model setelah proses pelatihan."}
+, {title:"Pola Beban Harian",data:"AI mempelajari grafik beban harian dari banyak hari untuk menemukan waktu beban puncak.",question:"Manfaat pembelajaran tersebut adalah...",options:[["A","Membantu memprediksi titik beban puncak."],["B","Menghapus kebutuhan data."],["C","Mengganti semua sensor dengan timer."]],answer:"A",explanation:"Semakin baik pola historis dipelajari, semakin membantu prediksi titik beban puncak."}
+, {title:"Perawatan Prediktif",data:"Data temperatur dan kondisi trafo menunjukkan tren yang mengarah pada potensi gangguan beberapa hari ke depan.",question:"Apa tindakan paling proaktif?",options:[["A","Menjadwalkan pemeriksaan sebelum kerusakan."],["B","Menunggu sampai trafo mati."],["C","Menghapus riwayat kondisi."]],answer:"A",explanation:"Predictive maintenance membantu melakukan perawatan sebelum kerusakan parah."}
+, {title:"Proteksi Cerdas",data:"Model mendeteksi pola bahaya pada panel dan sistem harus merespons dengan cepat.",question:"Contoh eksekusi keputusan adalah...",options:[["A","Trip relay atau alarm."],["B","Membuat data hilang."],["C","Menonaktifkan semua sensor."]],answer:"A",explanation:"Eksekusi dapat berupa trip relay, alarm, atau penyesuaian beban."}
+, {title:"Data Sensor Real-Time",data:"Sistem menerima arus, tegangan, frekuensi, dan temperatur secara berkala.",question:"Mengapa data tersebut penting bagi AI?",options:[["A","Sebagai dasar analisis kondisi sistem."],["B","Agar AI tidak perlu model."],["C","Supaya semua tindakan tetap manual."]],answer:"A",explanation:"Data sensor menjadi input bagi model untuk menganalisis kondisi kelistrikan."}
+, {title:"Smart Grid",data:"Jaringan modern harus meningkatkan keandalan, efisiensi, dan kemampuan merespons perubahan beban.",question:"Peran AI yang paling sesuai adalah...",options:[["A","Membantu proteksi, prediksi, dan optimasi energi."],["B","Menghilangkan seluruh sensor."],["C","Menggunakan aturan tetap tanpa data."]],answer:"A",explanation:"AI dapat digunakan pada smart grid untuk proteksi, efisiensi, dan perawatan prediktif."}
+
 ];
 
 let state = {
@@ -419,6 +431,8 @@ function escapeHTML(value){
     .replaceAll("'","&#039;");
 }
 
+function shuffle(array){const a=[...array];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
 function showScreen(id){
   ["startScreen","gameScreen","resultScreen"].forEach(screenId=>{
     $(screenId).classList.toggle("hidden",screenId !== id);
@@ -427,7 +441,7 @@ function showScreen(id){
 }
 
 function updateProgress(){
-  const percent = Math.round(((state.level + 1) / levels.length) * 100);
+  const percent = Math.round(((state.level + 1) / 20) * 100);
   $("levelText").textContent = `${state.level + 1}/${levels.length}`;
   $("progressText").textContent = `${percent}%`;
   $("progressBar").style.width = `${percent}%`;
@@ -435,7 +449,7 @@ function updateProgress(){
 }
 
 function renderLevel(){
-  const item = levels[state.level];
+  const item = state.questionPool[state.level];
   updateProgress();
   $("feedback").innerHTML = "";
   $("nextBtn").classList.add("hidden");
@@ -448,7 +462,7 @@ function renderLevel(){
 
   $("scenarioBox").innerHTML = `
     <div class="scenario-head">
-      <span class="level-badge">TINGKAT ${state.level + 1} / 10</span>
+      <span class="level-badge">TINGKAT ${state.level + 1} / 20</span>
       <strong>⚡ ${escapeHTML(item.title)}</strong>
     </div>
     <div class="data-box">
@@ -467,7 +481,7 @@ function renderLevel(){
 }
 
 function processAnswer(selected){
-  const item = levels[state.level];
+  const item = state.questionPool[state.level];
   const isCorrect = selected === item.answer;
 
   document.querySelectorAll(".choice").forEach(button=>{
@@ -524,7 +538,7 @@ function renderResult(){
   $("resultName").textContent = state.name;
   $("resultScore").textContent = state.score;
   $("finalScore").textContent = `${state.score}/100`;
-  $("correctCount").textContent = `${state.correct}/10`;
+  $("correctCount").textContent = `${state.correct}/20`;
   $("grade").textContent = grade;
   $("scoreRing").style.setProperty("--score-angle", `${state.score * 3.6}deg`);
 
@@ -535,7 +549,7 @@ function renderResult(){
 
   $("summaryText").innerHTML = `
     <p>
-      Kamu menyelesaikan seluruh 10 tingkat dengan
+      Kamu menyelesaikan seluruh 20 tingkat dengan
       <strong>${state.correct} keputusan tepat</strong> dan
       <strong>${state.score} poin</strong>.
     </p>
@@ -565,7 +579,7 @@ async function saveResult(){
     nama:state.name,
     nilai:state.score,
     benar:state.correct,
-    total:10,
+    total:20,
     jawaban:JSON.stringify(state.answers),
     waktu:new Date().toISOString()
   };
@@ -617,7 +631,8 @@ $("startBtn").addEventListener("click",()=>{
     level:0,
     score:0,
     correct:0,
-    answers:[]
+    answers:[],
+    questionPool:shuffle(levels)
   };
 
   $("nameError").textContent = "";
@@ -633,7 +648,7 @@ $("studentName").addEventListener("keydown",(event)=>{
 });
 
 $("nextBtn").addEventListener("click",()=>{
-  if(state.level < levels.length - 1){
+  if(state.level < 19){
     state.level += 1;
     renderLevel();
   }else{
