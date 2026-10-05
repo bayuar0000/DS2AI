@@ -478,7 +478,7 @@ function renderLevel(){
   $("feedback").innerHTML = "";
   $("nextBtn").classList.add("hidden");
 
-  // Buat 5 pilihan dan acak posisinya. Jawaban benar hanya boleh berada di B-E.
+  // Buat 5 pilihan dan acak posisinya. Label A-E hanya digunakan secara internal untuk penilaian.
   const labels = ["A", "B", "C", "D", "E"];
   const correctText = item.options.find(option => option[0] === item.answer)[1];
   const baseWrong = item.options.filter(option => option[0] !== item.answer).map(option => option[1]);
@@ -494,7 +494,7 @@ function renderLevel(){
 
   const optionHTML = randomizedOptions.map(option => `
     <button type="button" class="choice" data-answer="${escapeHTML(option.label)}">
-      <strong>${escapeHTML(option.label)}.</strong> ${escapeHTML(option.text)}
+      ${escapeHTML(option.text)}
     </button>
   `).join("");
 
