@@ -275,7 +275,10 @@ Contoh:
 https://script.google.com/macros/s/XXXXXXXXXXXX/exec
 ============================================================
 */
-const APPSCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT";
+const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQJ5LnZu9YPjfRtTXKXjp5O7r5uQBtJ1oPdVA_ZpBcOTPdcjYuZdYDDNRnqfML2rMe/exec";
+
+// Format yang harus digunakan: https://script.google.com/macros/s/XXXXXXXX/exec
+// URL ini harus berasal dari deployment Web App Apps Script yang menjalankan Code.gs.
 
 const levels = [
   {
@@ -589,50 +592,53 @@ function renderResult(){
 
 async function saveResult(){
   const saveBox = $("saveStatus");
+  const url = String(APPSCRIPT_URL || "").trim();
 
-  if(!APPSCRIPT_URL || APPSCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbwQJ5LnZu9YPjfRtTXKXjp5O7r5uQBtJ1oPdVA_ZpBcOTPdcjYuZdYDDNRnqfML2rMe/exec")){
+  if(!url || url.includes("GANTI_DENGAN") || !url.endsWith("/exec")){
     saveBox.innerHTML =
-      "⚠️ <strong>URL Apps Script belum diatur.</strong><br>" +
-      "Game tetap selesai, tetapi hasil belum dikirim ke Google Sheets. " +
-      "Edit nilai <code>APPSCRIPT_URL</code> di bagian atas file index.html.";
-    return;
+      "⚠️ <strong>URL Web App Apps Script belum benar.</strong><br>" +
+      "Gunakan URL deployment yang berakhiran <code>/exec</code> pada konstanta <code>APPSCRIPT_URL</code>.";
+    return false;
   }
 
   saveBox.innerHTML = "⏳ Mengirim hasil ke Google Sheets...";
 
+  // Payload ini sengaja dibuat sama persis dengan field yang dibaca Code.gs.
   const payload = {
-    nama:state.name,
-    nilai:state.score,
-    benar:state.correct,
-    total:20,
-    jawaban:JSON.stringify(state.answers),
-    waktu:new Date().toISOString()
+    nama: String(state.name || "Tanpa Nama"),
+    nilai: Number(state.score) || 0,
+    benar: Number(state.correct) || 0,
+    total: 20,
+    jawaban: JSON.stringify(state.answers || []),
+    waktu: new Date().toISOString()
   };
 
   try{
-    /*
-      mode no-cors digunakan karena Web App Apps Script berada
-      pada domain berbeda dari GitHub Pages.
-
-      Apps Script tetap akan menerima POST dan menyimpan data.
-    */
-    await fetch(APPSCRIPT_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{
-        "Content-Type":"text/plain;charset=utf-8"
+    // Apps Script Web App menerima JSON sebagai text/plain agar POST
+    // tidak memicu preflight CORS dari GitHub Pages.
+    await fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
       },
-      body:JSON.stringify(payload)
+      body: JSON.stringify(payload)
     });
 
+    // Dengan mode no-cors browser tidak boleh membaca response Apps Script.
+    // Jadi opaque response dianggap terkirim setelah request selesai.
     saveBox.innerHTML =
-      "✅ <strong>Hasil telah dikirim ke Google Sheets.</strong><br>" +
-      "Silakan periksa spreadsheet untuk melihat data siswa.";
+      "✅ <strong>Data hasil telah dikirim.</strong><br>" +
+      "Periksa sheet <strong>Hasil Game AI Smart Grid</strong> untuk memastikan baris baru masuk.";
+    return true;
+
   }catch(error){
-    console.error("Gagal menyimpan:",error);
+    console.error("Gagal mengirim hasil ke Apps Script:", error);
     saveBox.innerHTML =
-      "❌ <strong>Pengiriman gagal.</strong><br>" +
-      "Periksa kembali URL Web App Apps Script dan pengaturan deployment.";
+      "❌ <strong>Gagal mengirim hasil.</strong><br>" +
+      "Periksa URL Web App, deployment Apps Script, dan izin akses <strong>Anyone</strong>.";
+    return false;
   }
 }
 
