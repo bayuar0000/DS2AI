@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI Smart Grid - Game Simulasi Teknisi Cerdas untuk pembelajaran AI kelistrikan">
+<title>AI Smart Grid — Teknisi Cerdas</title>
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0d1b2e;
+  --panel2:#12243b;
+  --text:#e8f1ff;
+  --muted:#9db0c9;
+  --line:#29415f;
+  --accent:#38bdf8;
+  --accent2:#22c55e;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --shadow:0 20px 50px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 15% 10%,rgba(56,189,248,.14),transparent 28%),
+    radial-gradient(circle at 85% 80%,rgba(34,197,94,.10),transparent 28%),
+    var(--bg);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{
+  width:min(980px,94%);
+  margin:0 auto;
+  padding:28px 0 40px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+  margin-bottom:18px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:48px;height:48px;border-radius:14px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),#2563eb);
+  font-size:25px;
+  box-shadow:0 10px 30px rgba(56,189,248,.2);
+}
+.brand h1{font-size:20px;margin:0}
+.brand p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.card{
+  background:rgba(13,27,46,.92);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:28px;
+  box-shadow:var(--shadow);
+}
+.hidden{display:none!important}
+.hero{text-align:center;padding:42px 28px}
+.hero-icon{font-size:60px;margin-bottom:8px}
+h2{font-size:32px;margin:8px 0}
+h3{font-size:22px;margin:8px 0}
+p{line-height:1.65}
+.muted{color:var(--muted)}
+.tag{
+  display:inline-block;
+  padding:7px 12px;border-radius:999px;
+  color:#bfeeff;background:rgba(56,189,248,.10);
+  border:1px solid rgba(56,189,248,.25);
+  font-size:12px;font-weight:800;
+  letter-spacing:.4px;
+}
+.name-box{max-width:520px;margin:28px auto 0;text-align:left}
+label{display:block;font-weight:700;margin-bottom:8px}
+input{
+  width:100%;padding:14px 16px;
+  border-radius:13px;border:1px solid var(--line);
+  background:#091626;color:var(--text);
+  outline:none;
+}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.12)}
+.primary,.secondary{
+  border:0;border-radius:13px;padding:13px 18px;
+  font-weight:800;transition:.2s;
+}
+.primary{background:linear-gradient(135deg,#0ea5e9,#2563eb);color:white}
+.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.secondary:hover{border-color:var(--accent)}
+.full{width:100%;margin-top:14px}
+.error{color:#fecaca;font-size:14px;margin-top:8px}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin:18px 0;
+}
+.stat{
+  padding:14px;border:1px solid var(--line);
+  background:rgba(18,36,59,.65);border-radius:15px;
+}
+.stat span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.stat strong{font-size:20px}
+.progress-wrap{margin:16px 0 24px}
+.progress-info{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:8px}
+.progress{height:10px;border-radius:99px;background:#1a2c43;overflow:hidden}
+.progress-bar{height:100%;width:10%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s}
+.scenario{
+  border:1px solid var(--line);
+  background:linear-gradient(135deg,rgba(18,36,59,.95),rgba(10,25,42,.95));
+  border-radius:18px;padding:22px;
+}
+.scenario-head{
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+  flex-wrap:wrap;
+}
+.level-badge{
+  color:#c9f4ff;background:rgba(56,189,248,.1);
+  border:1px solid rgba(56,189,248,.25);
+  padding:7px 10px;border-radius:9px;font-size:12px;font-weight:800;
+}
+.data-box{
+  margin-top:16px;padding:15px;border-left:4px solid var(--accent);
+  background:rgba(56,189,248,.07);border-radius:8px;color:#dbeafe;
+}
+.question{font-size:18px;font-weight:800;margin:20px 0 10px}
+.choice{
+  display:block;width:100%;text-align:left;
+  background:#0b192b;color:var(--text);
+  border:1px solid var(--line);border-radius:13px;
+  padding:15px;margin-top:10px;
+}
+.choice:hover:not(:disabled){border-color:var(--accent);background:#10243c}
+.choice:disabled{cursor:default;opacity:.82}
+.feedback{
+  margin-top:16px;padding:16px;border-radius:14px;
+  border:1px solid var(--line);line-height:1.6;
+}
+.feedback.good{border-color:#15803d;background:rgba(34,197,94,.09)}
+.feedback.bad{border-color:#b91c1c;background:rgba(239,68,68,.08)}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions button{flex:1}
+.result{text-align:center}
+.score-ring{
+  width:150px;height:150px;border-radius:50%;
+  margin:24px auto;display:grid;place-items:center;
+  background:conic-gradient(var(--accent2) var(--score-angle,0deg),#1b2d44 0);
+  position:relative;
+}
+.score-ring:after{
+  content:"";position:absolute;inset:11px;border-radius:50%;background:var(--panel);
+}
+.score-value{position:relative;z-index:1;font-size:30px;font-weight:900}
+.summary{text-align:left;margin-top:22px}
+.summary li{margin:9px 0;line-height:1.5}
+.save{
+  margin-top:18px;padding:14px;border-radius:13px;
+  background:rgba(56,189,248,.07);border:1px solid var(--line);
+}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+@media(max-width:650px){
+  .app{width:94%;padding-top:16px}
+  .card{padding:18px;border-radius:18px}
+  .hero{padding:30px 18px}
+  h2{font-size:26px}
+  .stats{grid-template-columns:1fr}
+  .topbar{align-items:flex-start}
+  .actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>AI Smart Grid</h1>
+        <p>Simulasi Teknisi Cerdas • Kelas X TITL</p>
+      </div>
+    </div>
+    <span class="tag">10 LEVEL • 100 POIN</span>
+  </header>
+
+  <section id="startScreen" class="card hero">
+    <div class="hero-icon">🤖⚡</div>
+    <span class="tag">GAME SIMULASI — BUKAN QUIZ</span>
+    <h2>AI Smart Grid: Teknisi Cerdas</h2>
+    <p class="muted">
+      Kamu berperan sebagai teknisi yang harus membaca kondisi sistem,
+      memahami data sensor, menganalisis risiko, dan menentukan tindakan
+      yang paling tepat menggunakan konsep AI.
+    </p>
+
+    <div class="scenario" style="text-align:left;margin-top:22px">
+      <strong>🎯 Misi Kamu</strong>
+      <p style="margin-bottom:0">
+        Selesaikan 10 kondisi kelistrikan. Setiap keputusan tepat bernilai
+        <strong>10 poin</strong>. Nilai maksimum adalah <strong>100</strong>.
+      </p>
+    </div>
+
+    <div class="name-box">
+      <label for="studentName">Nama Siswa</label>
+      <input id="studentName" maxlength="60" autocomplete="name"
+             placeholder="Masukkan nama lengkap..." />
+      <div id="nameError" class="error"></div>
+      <button id="startBtn" class="primary full">🚀 Mulai Simulasi</button>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="card hidden">
+    <div class="stats" style="margin-top:0">
+      <div class="stat"><span>TEKNISI</span><strong id="displayName">-</strong></div>
+      <div class="stat"><span>NILAI</span><strong id="score">0/100</strong></div>
+      <div class="stat"><span>LEVEL</span><strong id="levelText">1/10</strong></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span>Progress simulasi</span>
+        <span id="progressText">10%</span>
+      </div>
+      <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+
+    <div id="scenarioBox" class="scenario"></div>
+    <div id="feedback"></div>
+
+    <div class="actions">
+      <button id="nextBtn" class="primary hidden">➡️ Lanjut</button>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="card result hidden">
+    <span class="tag">SIMULASI SELESAI</span>
+    <h2>🏆 Laporan Teknisi</h2>
+    <p class="muted">Hasil simulasi <strong id="resultName">-</strong></p>
+
+    <div id="scoreRing" class="score-ring">
+      <div id="resultScore" class="score-value">0</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>SKOR</span><strong id="finalScore">0/100</strong></div>
+      <div class="stat"><span>JAWABAN TEPAT</span><strong id="correctCount">0/10</strong></div>
+      <div class="stat"><span>PREDIKAT</span><strong id="grade">-</strong></div>
+    </div>
+
+    <div class="scenario summary">
+      <h3>📋 Rangkuman Penyelesaian</h3>
+      <div id="summaryText"></div>
+    </div>
+
+    <div id="saveStatus" class="save">
+      ⏳ Menunggu proses penyimpanan...
+    </div>
+
+    <button id="restartBtn" class="secondary full">🔄 Main Lagi</button>
+  </section>
+
+  <div class="footer">AI Smart Grid • Pembelajaran Koding & Kecerdasan Artifisial</div>
+</main>
+
+<script>
+/*
+============================================================
+KONFIGURASI
+GANTI URL DI BAWAH DENGAN URL WEB APP APPS SCRIPT ANDA.
+Contoh:
+https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+============================================================
+*/
+const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjuz2mCfzLvLmHyBzh7saNZu_S57Jz5djust8PV-_k3hTj57bwhITcri4a_C8s2IId/exec";
+
+const levels = [
+  {
+    title:"Lonjakan Arus",
+    data:"Sensor arus menunjukkan 50 A. Sistem sebelumnya memiliki pola normal 10 A. Model AI mendeteksi pola overload.",
+    question:"Sebagai teknisi, tindakan paling tepat adalah...",
+    options:[
+      ["A","Membiarkan kondisi karena belum ada komponen yang rusak."],
+      ["B","Mengevaluasi risiko lalu mengaktifkan proteksi atau alarm."],
+      ["C","Mematikan seluruh gedung tanpa melakukan analisis."]
+    ],
+    answer:"B",
+    explanation:"AI dapat mengenali pola bahaya dan membantu menentukan tindakan proteksi."
+  },
+  {
+    title:"Suhu Terminal",
+    data:"Sensor suhu mendeteksi kenaikan temperatur terminal kabel secara bertahap selama beberapa jam.",
+    question:"Apa fungsi AI yang paling sesuai?",
+    options:[
+      ["A","Memprediksi risiko sebelum kerusakan menjadi parah."],
+      ["B","Mengabaikan perubahan suhu karena sistem masih bekerja."],
+      ["C","Menunggu sampai kabel mengalami kerusakan."]
+    ],
+    answer:"A",
+    explanation:"AI dapat membantu mendeteksi kenaikan suhu dan memberi peringatan sebelum kondisi menjadi berbahaya."
+  },
+  {
+    title:"Memilih Indera AI",
+    data:"Kamu harus menentukan input untuk memantau arus, tegangan, dan temperatur panel.",
+    question:"Kombinasi input yang paling sesuai adalah...",
+    options:[
+      ["A","Sensor arus/tegangan dan sensor suhu."],
+      ["B","Timer saja."],
+      ["C","Sakelar manual saja."]
+    ],
+    answer:"A",
+    explanation:"Sensor berperan sebagai indera sistem cerdas untuk menerima parameter fisik kelistrikan."
+  },
+  {
+    title:"Training Model",
+    data:"Tersedia ribuan data kondisi normal dan abnormal dari sensor listrik.",
+    question:"Tahap Machine Learning yang mempelajari pola dari data tersebut disebut...",
+    options:[
+      ["A","Training."],
+      ["B","Eksekusi relay."],
+      ["C","Penggantian kabel."]
+    ],
+    answer:"A",
+    explanation:"Training merupakan tahap ketika model mempelajari pola dari data yang diberikan."
+  },
+  {
+    title:"Data Berlabel",
+    data:"Data latihan memiliki label: Arus 10 A = Normal dan Arus 50 A = Overload.",
+    question:"Jenis pembelajaran yang sesuai adalah...",
+    options:[
+      ["A","Unsupervised Learning."],
+      ["B","Supervised Learning."],
+      ["C","Manual Switching."]
+    ],
+    answer:"B",
+    explanation:"Supervised Learning menggunakan data latihan yang sudah memiliki label."
+  },
+  {
+    title:"Mencari Anomali",
+    data:"Kumpulan data arus tidak memiliki label. Sistem diminta menemukan pola yang tidak biasa.",
+    question:"Pendekatan yang paling sesuai adalah...",
+    options:[
+      ["A","Unsupervised Learning."],
+      ["B","Supervised Learning."],
+      ["C","Timer tetap."]
+    ],
+    answer:"A",
+    explanation:"Unsupervised Learning mencari pola atau anomali tanpa label awal."
+  },
+  {
+    title:"Urutan Keputusan AI",
+    data:"Sensor mengirim data. Model menganalisis risiko. Sistem kemudian memilih tindakan.",
+    question:"Urutan proses yang benar adalah...",
+    options:[
+      ["A","Keputusan → Sensor → Analisis → Eksekusi."],
+      ["B","Pembacaan → Evaluasi → Keputusan → Eksekusi."],
+      ["C","Eksekusi → Pembacaan → Keputusan → Evaluasi."]
+    ],
+    answer:"B",
+    explanation:"Alur pengambilan keputusan dalam materi adalah pembacaan, evaluasi, keputusan, kemudian eksekusi."
+  },
+  {
+    title:"Trafo Distrik",
+    data:"Suhu minyak trafo terus meningkat. Sistem AI dapat melihat tren kenaikan sebelum kerusakan total.",
+    question:"Strategi yang paling sesuai adalah...",
+    options:[
+      ["A","Predictive maintenance."],
+      ["B","Menunggu trafo mati."],
+      ["C","Menghapus data sensor."]
+    ],
+    answer:"A",
+    explanation:"Predictive maintenance menggunakan informasi kondisi untuk memprediksi risiko kerusakan sebelum kegagalan terjadi."
+  },
+  {
+    title:"Manajemen Beban Gedung",
+    data:"Beban gedung tinggi pada jam puncak. Tersedia PLTS dan beberapa beban non-prioritas.",
+    question:"Bagaimana AI dapat membantu efisiensi?",
+    options:[
+      ["A","Mengoptimalkan distribusi energi dan menekan beban non-prioritas."],
+      ["B","Menyalakan semua beban secara bersamaan."],
+      ["C","Mengabaikan sumber energi PLTS."]
+    ],
+    answer:"A",
+    explanation:"AI dapat membantu mengatur pemanfaatan PLTS, menyeimbangkan beban, dan menekan beban non-prioritas pada jam puncak."
+  },
+  {
+    title:"Teknisi Masa Depan",
+    data:"Sistem listrik harus beradaptasi terhadap pertumbuhan beban dan mendeteksi gangguan lebih awal.",
+    question:"Keunggulan sistem berbasis AI dibanding aturan tetap adalah...",
+    options:[
+      ["A","Adaptif dan dapat memprediksi kondisi berdasarkan data."],
+      ["B","Selalu menggunakan timer yang sama."],
+      ["C","Tidak membutuhkan data sensor."]
+    ],
+    answer:"A",
+    explanation:"Sistem berbasis AI bersifat data-driven, adaptif, dan dapat membantu prediksi serta optimasi."
+  }
+];
+
+let state = {
+  name:"",
+  level:0,
+  score:0,
+  correct:0,
+  answers:[]
+};
+
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showScreen(id){
+  ["startScreen","gameScreen","resultScreen"].forEach(screenId=>{
+    $(screenId).classList.toggle("hidden",screenId !== id);
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function updateProgress(){
+  const percent = Math.round(((state.level + 1) / levels.length) * 100);
+  $("levelText").textContent = `${state.level + 1}/${levels.length}`;
+  $("progressText").textContent = `${percent}%`;
+  $("progressBar").style.width = `${percent}%`;
+  $("score").textContent = `${state.score}/100`;
+}
+
+function renderLevel(){
+  const item = levels[state.level];
+  updateProgress();
+  $("feedback").innerHTML = "";
+  $("nextBtn").classList.add("hidden");
+
+  const optionHTML = item.options.map(option => `
+    <button type="button" class="choice" data-answer="${escapeHTML(option[0])}">
+      <strong>${escapeHTML(option[0])}.</strong> ${escapeHTML(option[1])}
+    </button>
+  `).join("");
+
+  $("scenarioBox").innerHTML = `
+    <div class="scenario-head">
+      <span class="level-badge">TINGKAT ${state.level + 1} / 10</span>
+      <strong>⚡ ${escapeHTML(item.title)}</strong>
+    </div>
+    <div class="data-box">
+      <strong>📡 Data Sistem</strong><br>
+      ${escapeHTML(item.data)}
+    </div>
+    <div class="question">${escapeHTML(item.question)}</div>
+    <div id="choices">${optionHTML}</div>
+  `;
+
+  document.querySelectorAll(".choice").forEach(button=>{
+    button.addEventListener("click",()=>{
+      processAnswer(button.dataset.answer);
+    });
+  });
+}
+
+function processAnswer(selected){
+  const item = levels[state.level];
+  const isCorrect = selected === item.answer;
+
+  document.querySelectorAll(".choice").forEach(button=>{
+    button.disabled = true;
+  });
+
+  if(isCorrect){
+    state.score += 10;
+    state.correct += 1;
+    $("feedback").innerHTML = `
+      <div class="feedback good">
+        <strong>✅ Keputusan tepat! +10 poin</strong>
+        <p style="margin:7px 0 0">${escapeHTML(item.explanation)}</p>
+      </div>
+    `;
+  }else{
+    $("feedback").innerHTML = `
+      <div class="feedback bad">
+        <strong>❌ Keputusan belum tepat. +0 poin</strong>
+        <p style="margin:7px 0 0">
+          Jawaban yang lebih tepat adalah <strong>${escapeHTML(item.answer)}</strong>.
+          ${escapeHTML(item.explanation)}
+        </p>
+      </div>
+    `;
+  }
+
+  state.answers.push({
+    level:state.level + 1,
+    soal:item.title,
+    jawaban:selected,
+    benar:isCorrect
+  });
+
+  $("score").textContent = `${state.score}/100`;
+  $("nextBtn").textContent =
+    state.level === levels.length - 1
+      ? "🏆 Lihat Hasil"
+      : "➡️ Lanjut ke Tingkat Berikutnya";
+  $("nextBtn").classList.remove("hidden");
+}
+
+function getGrade(score){
+  if(score >= 90) return "Sangat Baik";
+  if(score >= 80) return "Baik";
+  if(score >= 70) return "Cukup Baik";
+  if(score >= 60) return "Cukup";
+  return "Perlu Latihan";
+}
+
+function renderResult(){
+  const grade = getGrade(state.score);
+
+  $("resultName").textContent = state.name;
+  $("resultScore").textContent = state.score;
+  $("finalScore").textContent = `${state.score}/100`;
+  $("correctCount").textContent = `${state.correct}/10`;
+  $("grade").textContent = grade;
+  $("scoreRing").style.setProperty("--score-angle", `${state.score * 3.6}deg`);
+
+  const details = state.answers.map(item=>{
+    const icon = item.benar ? "✅" : "❌";
+    return `<li>${icon} Level ${item.level} — ${escapeHTML(item.soal)}: pilihan <strong>${escapeHTML(item.jawaban)}</strong></li>`;
+  }).join("");
+
+  $("summaryText").innerHTML = `
+    <p>
+      Kamu menyelesaikan seluruh 10 tingkat dengan
+      <strong>${state.correct} keputusan tepat</strong> dan
+      <strong>${state.score} poin</strong>.
+    </p>
+    <p>
+      Kemampuan yang dilatih meliputi pembacaan sensor, Machine Learning,
+      pengenalan anomali, pengambilan keputusan AI, predictive maintenance,
+      proteksi, dan efisiensi energi.
+    </p>
+    <ol>${details}</ol>
+  `;
+}
+
+async function saveResult(){
+  const saveBox = $("saveStatus");
+
+  if(!APPSCRIPT_URL || APPSCRIPT_URL.includes("GANTI_DENGAN")){
+    saveBox.innerHTML =
+      "⚠️ <strong>URL Apps Script belum diatur.</strong><br>" +
+      "Game tetap selesai, tetapi hasil belum dikirim ke Google Sheets. " +
+      "Edit nilai <code>APPSCRIPT_URL</code> di bagian atas file index.html.";
+    return;
+  }
+
+  saveBox.innerHTML = "⏳ Mengirim hasil ke Google Sheets...";
+
+  const payload = {
+    nama:state.name,
+    nilai:state.score,
+    benar:state.correct,
+    total:10,
+    jawaban:JSON.stringify(state.answers),
+    waktu:new Date().toISOString()
+  };
+
+  try{
+    /*
+      mode no-cors digunakan karena Web App Apps Script berada
+      pada domain berbeda dari GitHub Pages.
+
+      Apps Script tetap akan menerima POST dan menyimpan data.
+    */
+    await fetch(APPSCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body:JSON.stringify(payload)
+    });
+
+    saveBox.innerHTML =
+      "✅ <strong>Hasil telah dikirim ke Google Sheets.</strong><br>" +
+      "Silakan periksa spreadsheet untuk melihat data siswa.";
+  }catch(error){
+    console.error("Gagal menyimpan:",error);
+    saveBox.innerHTML =
+      "❌ <strong>Pengiriman gagal.</strong><br>" +
+      "Periksa kembali URL Web App Apps Script dan pengaturan deployment.";
+  }
+}
+
+function finishGame(){
+  renderResult();
+  showScreen("resultScreen");
+  saveResult();
+}
+
+$("startBtn").addEventListener("click",()=>{
+  const name = $("studentName").value.trim();
+
+  if(!name){
+    $("nameError").textContent = "Nama siswa wajib diisi sebelum memulai.";
+    $("studentName").focus();
+    return;
+  }
+
+  state = {
+    name:name,
+    level:0,
+    score:0,
+    correct:0,
+    answers:[]
+  };
+
+  $("nameError").textContent = "";
+  $("displayName").textContent = name;
+  showScreen("gameScreen");
+  renderLevel();
+});
+
+$("studentName").addEventListener("keydown",(event)=>{
+  if(event.key === "Enter"){
+    $("startBtn").click();
+  }
+});
+
+$("nextBtn").addEventListener("click",()=>{
+  if(state.level < levels.length - 1){
+    state.level += 1;
+    renderLevel();
+  }else{
+    finishGame();
+  }
+});
+
+$("restartBtn").addEventListener("click",()=>{
+  state = {
+    name:"",
+    level:0,
+    score:0,
+    correct:0,
+    answers:[]
+  };
+  $("studentName").value = "";
+  $("saveStatus").textContent = "⏳ Menunggu proses penyimpanan...";
+  showScreen("startScreen");
+  $("studentName").focus();
+});
+</script>
+</body>
+</html>
